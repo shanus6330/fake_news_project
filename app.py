@@ -19,20 +19,22 @@ def load_data():
         return None
     return df
 
-
 # ----------------------------
 # Train Model
 # ----------------------------
 @st.cache_resource
 def train_model(df):
-    X = df["Body"].fillna("")  # use Body column (could also try Headline)
-    y = df["Label"]
+    # Combine Headline + Body
+    X = (df['Headline'].fillna('') + " " + df['Body'].fillna(''))
+    y = df['Label']
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    # Split
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42, stratify=y)
 
+    # Logistic Regression with class_weight='balanced'
     model = Pipeline([
         ("tfidf", TfidfVectorizer(stop_words="english", max_features=5000)),
-        ("clf", LogisticRegression(max_iter=200)),
+        ("clf", LogisticRegression(max_iter=200, class_weight='balanced')),
     ])
 
     model.fit(X_train, y_train)
