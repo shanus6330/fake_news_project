@@ -12,11 +12,13 @@ from sklearn.pipeline import Pipeline
 @st.cache_data
 def load_data():
     try:
-        df = pd.read_csv("archive (1)/data.csv")  # update path if needed
-    except:
-        st.error("❌ Could not find data.csv. Make sure it's uploaded in your repo.")
+        url = "https://raw.githubusercontent.com/shanus6330/fake_news_project/main/data.csv"
+        df = pd.read_csv(url)
+    except Exception as e:
+        st.error(f"❌ Could not load dataset: {e}")
         return None
     return df
+
 
 # ----------------------------
 # Train Model
